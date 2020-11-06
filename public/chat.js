@@ -39,7 +39,7 @@ $(function () {
 
     // User Entered
     socket.on('user join', function(msg){
-      $('#messages').append($('<li>').text(msg + "Joined"));
+      $('#messages').append($('<li>').text(msg + " has joined the room"));
     });
 
 
@@ -57,8 +57,6 @@ $(function () {
         $('#messages').append($('<li>').text(msg_str));
 
       }
-      // msg_str = "[" + msg.timestamp+ "] "+ msg.username +":" +msg.message;
-      // $('#messages').append($('<li>').text(msg_str));
     });
 
     // socket.on('seq-num', function(msg,cur_time){
@@ -66,8 +64,8 @@ $(function () {
     // });
 
     // User Disconnect
-    socket.on('user disconnect', function(msg){
-    $('#messages').append($('<li>').text("User Disconnected"));
+    socket.on('user disconnect', function(username){
+    $('#messages').append($('<li>').text(`${username} has disconnected`));
   });
 
   // Handle Cookie
@@ -79,8 +77,6 @@ $(function () {
       document.cookie = `unique_user=${msg}`
     });
   }
-
-
   
   });
 

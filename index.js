@@ -7,7 +7,12 @@ var io = require('socket.io')(http);
 let timestamp = new Date();
 app.use(express.static('public'))
 
+
+// Connect Socket ID to a cookie
 let clients = new Map();
+
+
+// Connect Cookie to a username
 let usernames = new Map();
 let anon_user = 0;
 // History
@@ -26,14 +31,36 @@ function time_stamp() {
 	return timestamp.getHours() + ":" +  timestamp.getMinutes() + ":" + timestamp.getSeconds();
 }
 
+/* Get cookie
+* param takes in a socketid
+* returns a username if there is.
+*/
+function get_cookie(socket_id) {
+	let cookie = clients.get(socket_id);
+	return cookie;
+}
+
+/* Get username
+* param takes in a socketid
+* returns a username if there is.
+*/
+function get_username(socket_id) {
+	let username = usernames.get(get_cookie(socket_id));
+	return username;
+}
+
+
+
 //   User Connects
 io.on('connection', (socket) => {
 	// current hours
-	clients.set(socket, 1);
+	// clients.set(socket, 1);
 
 	socket.on('disconnect', (msg) => {
-	  io.emit('user disconnect', msg);
-	  clients.delete(socket);
+	  let username = get_username(socket.id);
+	  io.emit('user disconnect', username);
+	  
+	  clients.delete(socket.id);
 	});
 
 	socket.on('chat message', (msg) => {
@@ -53,24 +80,20 @@ io.on('connection', (socket) => {
 	// Retrieve History
 
 	//Update username
-	socket.on('cookie success', (msg) => {
-		console.log("COOKIE Success");
-		console.log(msg, socket.id);
+	socket.on('cookie success', (msg) => {		
+		// If user name doesnt exist, we set it to anon user 
 		if (!usernames.has(msg)){
 			name = "anon_user" + anon_user.toString();
 			anon_user +=1;
 			usernames.set(msg, name);
 		}
+		clients.set(socket.id, msg)
 
-		io.emit('chat message', msg, time_stamp());
+
+		io.emit('user join', name, time_stamp());
+
+		// io.emit('chat message', msg, time_stamp());
 	});
-
-
-
-
-	// During Connection Announce user connection
-	io.emit('user join', socket.id, time_stamp());
-
 });
 
 // sends each client its current sequence number
