@@ -1,11 +1,16 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
+
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
 let date_ob = new Date();
+app.use(express.static('public'))
 
 app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/index.html');
+	// res.sendFile(__dirname + '/chat.js');
+
   });
   
 //   io.on('connection', (socket) => {
@@ -36,10 +41,10 @@ io.on('connection', (socket) => {
 
 
 	socket.on('chat message', (msg) => {
-		var cur_time = time_stamp();
-		console.log(cur_time);
+		// var cur_time = time_stamp();
+		// console.log(cur_time);
 		
-		io.emit('chat message', msg, cur_time);
+		io.emit('chat message', msg, time_stamp());
 	});
 });
 
