@@ -8,7 +8,11 @@ let timestamp = new Date();
 app.use(express.static('public'))
 
 let clients = new Map();
+let usernames = new Map();
 
+
+console.log("JACKY");
+console.log(usernames.keys());
 
 app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/public/index.html');
@@ -36,11 +40,6 @@ function time_stamp() {
 //   User Connects
 io.on('connection', (socket) => {
 	// current hours
-	// let hours = date_ob.getHours();
-	// // current minutes
-	// let minutes = date_ob.getMinutes();
-	// // current seconds
-	// let seconds = date_ob.getSeconds();
 	clients.set(socket, 1);
 
 	socket.on('disconnect', (msg) => {
@@ -50,16 +49,27 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('chat message', (msg) => {
-		// var cur_time = time_stamp();
-		// console.log(cur_time);
+		var cur_time = time_stamp();
+		console.log(cur_time);
 		
 		io.emit('chat message', msg, time_stamp());
 	});
 
+
+	//Handle new connection
+
+	io.emit('set cookie', socket.id, time_stamp());
+
+	//Update username
+	socket.on('cookie success', (msg) => {
+		console.log(msg, socket.id);
+		io.emit('chat message', msg, time_stamp());
+	});
+
+
+
+
 	// During Connection Announce user connection
-
-
-
 	io.emit('user join', socket.id, time_stamp());
 
 });
