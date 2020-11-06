@@ -8,10 +8,8 @@ let date_ob = new Date();
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-	res.sendFile(__dirname + '/index.html');
-	// res.sendFile(__dirname + '/chat.js');
-
-  });
+	res.sendFile(__dirname + '/public/index.html');
+});
   
 //   io.on('connection', (socket) => {
 // 	console.log('a user connected');
@@ -26,11 +24,12 @@ app.get('/', (req, res) => {
 // 	});
 //   });
 
-// time_stamp
+// TimeStamp
 function time_stamp() {
 	return date_ob.getHours() + ":" +  date_ob.getMinutes() + ":" + date_ob.getSeconds();
-  }
+}
 
+//   User Connects
 io.on('connection', (socket) => {
 	// current hours
 	// let hours = date_ob.getHours();
@@ -39,6 +38,11 @@ io.on('connection', (socket) => {
 	// // current seconds
 	// let seconds = date_ob.getSeconds();
 
+
+	socket.on('disconnect', (msg) => {
+	//   console.log('user disconnected');
+	  io.emit('disconnect', msg);
+	});
 
 	socket.on('chat message', (msg) => {
 		// var cur_time = time_stamp();
