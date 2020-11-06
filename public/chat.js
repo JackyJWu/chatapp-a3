@@ -45,14 +45,20 @@ $(function () {
 
     // Message is entered
     socket.on('chat message', function(msg){
-      console.log(msg)
+      console.log(msg, extract_cookie(), msg.cookie);
+      // msg_str = "[" + msg.timestamp+ "] "+ msg.username +":" +msg.message;
+
       if (extract_cookie() == msg.cookie){
+        console.log("MATCHING");
+        $('#messages').append($(`<li>[${msg.timestamp}] ${msg.username}:<b>${msg.message}</b></li>`));
 
       }else{
         msg_str = "[" + msg.timestamp+ "] "+ msg.username +":" +msg.message;
+        $('#messages').append($('<li>').text(msg_str));
+
       }
-      msg_str = "[" + msg.timestamp+ "] "+ msg.username +":" +msg.message;
-      $('#messages').append($('<li>').text(msg_str));
+      // msg_str = "[" + msg.timestamp+ "] "+ msg.username +":" +msg.message;
+      // $('#messages').append($('<li>').text(msg_str));
     });
 
     // socket.on('seq-num', function(msg,cur_time){
