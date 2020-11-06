@@ -54,8 +54,6 @@ function get_username(socket_id) {
 //   User Connects
 io.on('connection', (socket) => {
 	// current hours
-	// clients.set(socket, 1);
-
 	socket.on('disconnect', (msg) => {
 	  let username = get_username(socket.id);
 	  io.emit('user disconnect', username);

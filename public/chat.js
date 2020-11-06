@@ -76,6 +76,7 @@ $(function () {
     socket.on('set cookie', function(msg){
       document.cookie = `unique_user=${msg}`
     });
+    socket.emit('cookie success', extract_cookie());
   }
   
   });
