@@ -11,7 +11,7 @@ function extract_cookie(){
 
 $(function () {
     var socket = io();
-
+    // Handle Input
     $('form').submit(function(e){
       e.preventDefault(); // prevents page reloading
 
@@ -26,11 +26,17 @@ $(function () {
         console.log("JACKY WU");
       };
 
-
-      socket.emit('chat message', $('#m').val());
+      // Send message to socket
+      let msg = {
+        message:  $('#m').val(),
+        cookie: extract_cookie()
+      }
+      socket.emit('chat message', msg);
       $('#m').val('');
       return false;
     });
+
+
     // User Entered
     socket.on('user join', function(msg){
       $('#messages').append($('<li>').text(msg + "Joined"));
@@ -38,14 +44,20 @@ $(function () {
 
 
     // Message is entered
-    socket.on('chat message', function(msg,cur_time){
-      msg = "[" + cur_time + "]: "+msg;
-      $('#messages').append($('<li>').text(msg));
+    socket.on('chat message', function(msg){
+      console.log(msg)
+      if (extract_cookie() == msg.cookie){
+
+      }else{
+        msg_str = "[" + msg.timestamp+ "] "+ msg.username +":" +msg.message;
+      }
+      msg_str = "[" + msg.timestamp+ "] "+ msg.username +":" +msg.message;
+      $('#messages').append($('<li>').text(msg_str));
     });
 
-    socket.on('seq-num', function(msg,cur_time){
-      $('#messages').append($('<li>').text(msg));
-    });
+    // socket.on('seq-num', function(msg,cur_time){
+    //   $('#messages').append($('<li>').text(msg));
+    // });
 
     // User Disconnect
     socket.on('user disconnect', function(msg){

@@ -9,27 +9,16 @@ app.use(express.static('public'))
 
 let clients = new Map();
 let usernames = new Map();
+let anon_user = 0;
+// History
+let history = [];
 
-
-console.log("JACKY");
-console.log(usernames.keys());
 
 app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/public/index.html');
 });
   
-//   io.on('connection', (socket) => {
-// 	console.log('a user connected');
-// 	socket.on('disconnect', () => {
-// 	  console.log('user disconnected');
-// 	});
-//   });
 
-// io.on('connection', (socket) => {
-// 	socket.on('chat message', (msg) => {
-// 	  console.log('message: ' + msg);
-// 	});
-//   });
 
 // TimeStamp
 function time_stamp() {
@@ -43,26 +32,36 @@ io.on('connection', (socket) => {
 	clients.set(socket, 1);
 
 	socket.on('disconnect', (msg) => {
-	//   console.log('user disconnected');
 	  io.emit('user disconnect', msg);
 	  clients.delete(socket);
 	});
 
 	socket.on('chat message', (msg) => {
-		var cur_time = time_stamp();
-		console.log(cur_time);
-		
-		io.emit('chat message', msg, time_stamp());
+		let msg_obj = {
+			message: msg.message,
+			cookie: msg.cookie,
+			username: usernames.get(msg.cookie),
+			timestamp: time_stamp()
+		}
+		io.emit('chat message', msg_obj);
 	});
 
 
 	//Handle new connection
-
 	io.emit('set cookie', socket.id, time_stamp());
+	
+	// Retrieve History
 
 	//Update username
 	socket.on('cookie success', (msg) => {
+		console.log("COOKIE Success");
 		console.log(msg, socket.id);
+		if (!usernames.has(msg)){
+			name = "anon_user" + anon_user.toString();
+			anon_user +=1;
+			usernames.set(msg, name);
+		}
+
 		io.emit('chat message', msg, time_stamp());
 	});
 
