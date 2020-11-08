@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 // TimeStamp
 function time_stamp() {
 	timestamp = new Date();
-	return timestamp.getHours() + ":" +  timestamp.getMinutes() + ":" + timestamp.getSeconds();
+	return timestamp.getHours() + ":" +  timestamp.getMinutes();
 }
 
 /* Get cookie
@@ -53,6 +53,9 @@ function get_username(socket_id) {
 
 //   User Connects
 io.on('connection', (socket) => {
+	//Handle new connection
+	io.emit('set cookie', socket.id, time_stamp());
+
 	// current hours
 	socket.on('disconnect', (msg) => {
 	  let username = get_username(socket.id);
@@ -72,8 +75,7 @@ io.on('connection', (socket) => {
 	});
 
 
-	//Handle new connection
-	io.emit('set cookie', socket.id, time_stamp());
+
 	
 	// Retrieve History
 
@@ -86,8 +88,6 @@ io.on('connection', (socket) => {
 			usernames.set(msg, name);
 		}
 		clients.set(socket.id, msg)
-
-
 		io.emit('user join', name, time_stamp());
 
 		// io.emit('chat message', msg, time_stamp());

@@ -42,14 +42,25 @@ $(function () {
       $('#messages').append($('<li>').text(msg + " has joined the room"));
     });
 
+      // Handle Cookie
+    if (document.cookie.split(';').some((item) => item.trim().startsWith('unique_user='))) {
+      // Case where cookie exists. If it exists, return cookie value to the server
+      socket.emit('cookie success', extract_cookie());
+    }else{
+      // New User
+      socket.on('set cookie', function(msg){
+        document.cookie = `unique_user=${msg}`
+        socket.emit('cookie success', msg);
+      });
+    }
 
     // Message is entered
     socket.on('chat message', function(msg){
-      console.log(msg, extract_cookie(), msg.cookie);
+      // console.log(msg, extract_cookie(), msg.cookie);
       // msg_str = "[" + msg.timestamp+ "] "+ msg.username +":" +msg.message;
 
       if (extract_cookie() == msg.cookie){
-        console.log("MATCHING");
+        console.log("MATCHING", extract_cookie(), msg.cookie);
         $('#messages').append($(`<li>[${msg.timestamp}] ${msg.username}:<b>${msg.message}</b></li>`));
 
       }else{
@@ -66,19 +77,7 @@ $(function () {
     // User Disconnect
     socket.on('user disconnect', function(username){
     $('#messages').append($('<li>').text(`${username} has disconnected`));
-  });
-
-  // Handle Cookie
-  if (document.cookie.split(';').some((item) => item.trim().startsWith('unique_user='))) {
-    // Case where cookie exists. If it exists, return cookie value to the server
-    socket.emit('cookie success', extract_cookie());
-  }else{
-    socket.on('set cookie', function(msg){
-      document.cookie = `unique_user=${msg}`
-    });
-    socket.emit('cookie success', extract_cookie());
-  }
-  
+  });  
   });
 
 
