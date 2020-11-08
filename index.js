@@ -71,6 +71,8 @@ io.on('connection', (socket) => {
 			username: usernames.get(msg.cookie),
 			timestamp: time_stamp()
 		}
+		history.push(msg_obj);
+		console.log(history);
 		io.emit('chat message', msg_obj);
 	});
 
@@ -88,8 +90,15 @@ io.on('connection', (socket) => {
 			usernames.set(msg, name);
 		}
 		clients.set(socket.id, msg)
+		console.log("JACKY", history);
+		for (iter in history){
+			socket.emit('chat message', history[iter])
+		}
 		io.emit('user join', name, time_stamp());
-
+		
+		// for (msg in history){
+		// 	socket.emit('chat message', msg)
+		// }
 		// io.emit('chat message', msg, time_stamp());
 	});
 });
