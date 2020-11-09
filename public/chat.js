@@ -39,7 +39,7 @@ $(function () {
 
     // User Entered
     socket.on('user join', function(msg){
-      $('#messages').append($('<li>').text(msg + " has joined the room"));
+      $('#messages').append($('<li>').text(`[${msg.timestamp}] ${msg.message} has joined the room`));
     });
 
       // Handle Cookie

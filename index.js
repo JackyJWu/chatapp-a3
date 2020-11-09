@@ -94,7 +94,13 @@ io.on('connection', (socket) => {
 		for (iter in history){
 			socket.emit('chat message', history[iter])
 		}
-		io.emit('user join', name, time_stamp());
+
+		msg_obj = {
+			message: name, 
+			timestamp: time_stamp()
+		};
+		io.emit('user join', msg_obj);
+		// io.emit('user join', name, time_stamp());
 		
 		// for (msg in history){
 		// 	socket.emit('chat message', msg)
