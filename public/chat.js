@@ -34,9 +34,6 @@ $(function () {
       socket.emit('chat message', msg);
       $('#m').val('');
 
-
-      var objDiv = document.getElementById("messages");
-      objDiv.scrollTop = objDiv.scrollHeight;
       return false;
     });
 
@@ -44,6 +41,9 @@ $(function () {
     // User Entered
     socket.on('user join', function(msg){
       $('#messages').append($('<li>').text(`[${msg.timestamp}] ${msg.message} has joined the room`));
+      
+      var msgbox = document.getElementById("messages");
+      msgbox.scrollTop = msgbox.scrollHeight;
     });
 
       // Handle Cookie
@@ -72,6 +72,11 @@ $(function () {
         $('#messages').append($('<li>').text(msg_str));
 
       }
+
+      // Scroll down when new message
+      var msgbox = document.getElementById("messages");
+      msgbox.scrollTop = msgbox.scrollHeight;
+
     });
 
     // socket.on('seq-num', function(msg,cur_time){
@@ -80,8 +85,10 @@ $(function () {
 
     // User Disconnect
     socket.on('user disconnect', function(username){
-    $('#messages').append($('<li>').text(`${username} has disconnected`));
-  });  
+      $('#messages').append($('<li>').text(`${username} has disconnected`));
+      var msgbox = document.getElementById("messages");
+      msgbox.scrollTop = msgbox.scrollHeight;
+    });  
   });
 
 
