@@ -33,6 +33,10 @@ $(function () {
       }
       socket.emit('chat message', msg);
       $('#m').val('');
+
+
+      var objDiv = document.getElementById("messages");
+      objDiv.scrollTop = objDiv.scrollHeight;
       return false;
     });
 
