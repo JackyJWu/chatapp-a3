@@ -90,6 +90,10 @@ io.on('connection', (socket) => {
 			}
 			socket.emit('chat message', msg);
 		}else{ // Public messages we send to all users
+			// Removes the oldest line when history has 200 lines
+			if (history.length == 200){
+				history.shift()
+			}
 			history.push(msg);
 			io.emit('chat message', msg);
 		}
