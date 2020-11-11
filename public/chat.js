@@ -9,15 +9,45 @@ function extract_cookie(){
   return unique_id;
 }
 
+// Check hex (Change this before submission)
+function isHex (hex) {
+  return typeof hex === 'string'
+      && hex.length === 6
+      && !isNaN(Number('0x' + hex))
+}
+
 $(function () {
     var socket = io();
     // Handle Input
     $('form').submit(function(e){
       e.preventDefault(); // prevents page reloading
 
+      let msg = {
+        message:  $('#m').val(),
+        cookie: extract_cookie(),
+        display: true, // if display is "true", we send msg to every user. If display is "false", we send back to the current user.
+        type: "message" // type can be 'name', 'color' or 'message'
+      }
       // Submit button case handle
-
+    let words = $('#m').val().split(" ")
+      // Handle when user types new name
+      if (words[0] == "/name"){
+        console.log(msg);
+      }
+      // Handle when the user wants to change color
+      else if (words[0] == "/color"){
+        msg.display = false; // We only display message back to ther user
+        if (words.length == 2 && isHex(words[1])){
+          msg.message = words[1];
+          msg.type = "color";
+        }else{
+          // Handle incorrect input
+          msg.message = "This feature only accepts hex color codes (6 letter/numbers). Usage: /color *insert hex color code*";
+        }
+      }
+      
       // Name Change
+      /*
       if ($('#m').val() == "/name"){
         console.log("JACKY WU");
       };
@@ -25,12 +55,14 @@ $(function () {
       if ($('#m').val() == "/color"){
         console.log("JACKY WU");
       };
-
-      // Send message to socket
+            // Send message to socket
       let msg = {
         message:  $('#m').val(),
         cookie: extract_cookie()
       }
+      */
+
+
       socket.emit('chat message', msg);
       $('#m').val('');
 
@@ -60,17 +92,18 @@ $(function () {
 
     // Message is entered
     socket.on('chat message', function(msg){
-      // console.log(msg, extract_cookie(), msg.cookie);
-      // msg_str = "[" + msg.timestamp+ "] "+ msg.username +":" +msg.message;
 
+
+      // Printing your own message
       if (extract_cookie() == msg.cookie){
         console.log("MATCHING", extract_cookie(), msg.cookie);
-        $('#messages').append($(`<li>[${msg.timestamp}] ${msg.username}:<b>${msg.message}</b></li>`));
+        $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}">${msg.user.name}</span>:<b>${msg.message}</b></li>`));
 
-      }else{
-        msg_str = "[" + msg.timestamp+ "] "+ msg.username +":" +msg.message;
-        $('#messages').append($('<li>').text(msg_str));
-
+      }else{ // Print message from somebody else
+        console.log(msg);
+        msg_str = "[" + msg.timestamp+ "] "+ msg.user.name +":" +msg.message;
+        $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}">${msg.user.name}</span>:${msg.message}</li>`))
+        // $('#messages').append($('<li>').text(msg_str));
       }
 
       // Scroll down when new message
@@ -84,8 +117,8 @@ $(function () {
     // });
 
     // User Disconnect
-    socket.on('user disconnect', function(username){
-      $('#messages').append($('<li>').text(`${username} has disconnected`));
+    socket.on('user disconnect', function(user){
+      $('#messages').append($('<li>').text(`${user.name} has disconnected`));
       var msgbox = document.getElementById("messages");
       msgbox.scrollTop = msgbox.scrollHeight;
     });  

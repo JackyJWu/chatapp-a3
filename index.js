@@ -14,6 +14,7 @@ let clients = new Map();
 
 // Connect Cookie to a username
 let usernames = new Map();
+
 let anon_user = 0;
 // History
 let history = [];
@@ -45,8 +46,8 @@ function get_cookie(socket_id) {
 * returns a username if there is.
 */
 function get_username(socket_id) {
-	let username = usernames.get(get_cookie(socket_id));
-	return username;
+	let user = usernames.get(get_cookie(socket_id));
+	return user;
 }
 
 
@@ -58,22 +59,41 @@ io.on('connection', (socket) => {
 
 	// current hours
 	socket.on('disconnect', (msg) => {
-	  let username = get_username(socket.id);
-	  io.emit('user disconnect', username);
+	  let user = get_username(socket.id);
+	  io.emit('user disconnect', user);
 	  
 	  clients.delete(socket.id);
 	});
 
 	socket.on('chat message', (msg) => {
+		/*
 		let msg_obj = {
 			message: msg.message,
 			cookie: msg.cookie,
+			display: msg.display,
+			type: msg.type,
 			username: usernames.get(msg.cookie),
 			timestamp: time_stamp()
 		}
-		history.push(msg_obj);
-		console.log(history);
-		io.emit('chat message', msg_obj);
+		*/
+		// Backend retrieves username from cookie and sets timestamp
+		msg.user = usernames.get(msg.cookie);
+		msg.timestamp = time_stamp();
+
+		if (!msg.display){	// Private messages, we just sent back to the user
+			if (msg.type == "color"){
+				let user = usernames.get(msg.cookie);
+				
+				user.color = msg.message; 
+				usernames.set(msg.cookie, user);
+				msg.message = "Color has been changed";
+			}
+			socket.emit('chat message', msg);
+		}else{ // Public messages we send to all users
+			history.push(msg);
+			io.emit('chat message', msg);
+		}
+
 	});
 
 
@@ -85,18 +105,23 @@ io.on('connection', (socket) => {
 	socket.on('cookie success', (msg) => {		
 		// If user name doesnt exist, we set it to anon user 
 		if (!usernames.has(msg)){
-			name = "anon_user" + anon_user.toString();
+			user = {
+				name: "anon_user" + anon_user.toString(),
+				color: "000000"
+			}
+
+			// name = "anon_user" + anon_user.toString();
 			anon_user +=1;
-			usernames.set(msg, name);
+			usernames.set(msg, user);
+		}else{
+			user = usernames.get(msg);
 		}
 		clients.set(socket.id, msg)
-		console.log("JACKY", history);
 		for (iter in history){
 			socket.emit('chat message', history[iter])
 		}
-
 		msg_obj = {
-			message: name, 
+			message: user.name, 
 			timestamp: time_stamp()
 		};
 		io.emit('user join', msg_obj);
