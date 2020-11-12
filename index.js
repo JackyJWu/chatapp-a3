@@ -50,6 +50,20 @@ function get_username(socket_id) {
 	return user;
 }
 
+/* username exists
+* returns true if username exists and false otherwise
+*/
+function username_exist(username) {
+
+	for (let [key, value] of clients) {
+		if(usernames.get(value).name == username){
+			return true
+		}
+	}
+
+	return false;
+}
+
 /* Add message to history
 *  param takes a message type
 *  updates history
@@ -129,8 +143,20 @@ io.on('connection', (socket) => {
 			output_history(io);
 			socket.emit('chat message', msg);
 		}else{ // Public messages we send to all users
-			msg_to_history(msg);
-			io.emit('chat message', msg);
+			if (msg.type == "name"){
+				if (!username_exist(msg.message)){
+					let old_name = msg.user.name
+					msg.user.name = msg.message;
+					usernames.set(msg.cookie, user);
+					msg.message = `${old_name} has changed his name to ${msg.user.name}`
+				}
+				msg_to_history(msg);
+				io.emit('chat message', msg);
+			}else{
+				msg_to_history(msg);
+				io.emit('chat message', msg);
+			}
+
 		}
 
 	});

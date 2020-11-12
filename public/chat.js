@@ -29,10 +29,18 @@ $(function () {
         type: "message" // type can be 'name', 'color' or 'message'
       }
       // Submit button case handle
-    let words = $('#m').val().split(" ")
+      let words = $('#m').val().split(" ")
       // Handle when user types new name
       if (words[0] == "/name"){
         console.log(msg);
+        if (words.length >1){
+          words.shift();
+          msg.message = words.join(" ");
+          msg.type = "name";
+        }else{
+          msg.message = "Correct Usage: /name *new name*";
+        }
+
       }
       // Handle when the user wants to change color
       else if (words[0] == "/color"){
@@ -76,7 +84,13 @@ $(function () {
     socket.on('chat message', function(msg){
       // Printing your own message
       if (extract_cookie() == msg.cookie){
-        $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}">${msg.user.name}</span>:<b>${msg.message}</b></li>`));
+        if (msg.type == "message"){
+          $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}">${msg.user.name}</span>:<b>${msg.message}</b></li>`));
+
+        }else if (msg.type == "name"){
+          $('#messages').append($(`<li>[${msg.timestamp}] <b>${msg.message}</b></li>`));
+
+        }
 
       }else{ // Print message from somebody else
         msg_str = "[" + msg.timestamp+ "] "+ msg.user.name +":" +msg.message;
