@@ -50,6 +50,14 @@ function get_username(socket_id) {
 	return user;
 }
 
+/* Get username from cookie
+* param takes in a socketid
+* returns a username if there is.
+*/
+function get_user(cookie) {
+	let user = usernames.get(cookie);
+	return user;
+}
 
 
 //   User Connects
@@ -88,6 +96,13 @@ io.on('connection', (socket) => {
 				usernames.set(msg.cookie, user);
 				msg.message = "Color has been changed";
 			}
+			io.emit('color change', msg);
+			for (iter in history){
+				//Update the user color
+				// let messenger = get_user(history[iter].cookie);
+	
+				io.emit('chat message', history[iter])
+			}
 			socket.emit('chat message', msg);
 		}else{ // Public messages we send to all users
 			// Removes the oldest line when history has 200 lines
@@ -103,7 +118,6 @@ io.on('connection', (socket) => {
 
 
 	
-	// Retrieve History
 
 	//Update username
 	socket.on('cookie success', (msg) => {		
@@ -122,10 +136,13 @@ io.on('connection', (socket) => {
 		}
 		clients.set(socket.id, msg)
 		for (iter in history){
+			//Update the user color
+			// let messenger = get_user(history[iter].cookie);
+
 			socket.emit('chat message', history[iter])
 		}
 		msg_obj = {
-			message: user.name, 
+			user: user,
 			timestamp: time_stamp()
 		};
 		io.emit('user join', msg_obj);

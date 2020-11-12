@@ -72,7 +72,9 @@ $(function () {
 
     // User Entered
     socket.on('user join', function(msg){
-      $('#messages').append($('<li>').text(`[${msg.timestamp}] ${msg.message} has joined the room`));
+      $('#messages').append($(`<li> <span style="color: #${msg.user.color}">${msg.user.name}</span> has joined the room</li>`));
+
+      // $('#messages').append($('<li>').text(`[${msg.timestamp}] ${msg.message} has joined the room`));
       
       var msgbox = document.getElementById("messages");
       msgbox.scrollTop = msgbox.scrollHeight;
@@ -96,13 +98,12 @@ $(function () {
 
       // Printing your own message
       if (extract_cookie() == msg.cookie){
-        console.log("MATCHING", extract_cookie(), msg.cookie);
+        // console.log("MATCHING", extract_cookie(), msg.cookie);
         $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}">${msg.user.name}</span>:<b>${msg.message}</b></li>`));
 
       }else{ // Print message from somebody else
-        console.log(msg);
         msg_str = "[" + msg.timestamp+ "] "+ msg.user.name +":" +msg.message;
-        $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}">${msg.user.name}</span>:${msg.message}</li>`))
+        $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}">${msg.user.name}</span>:${msg.message}</li>`));
         // $('#messages').append($('<li>').text(msg_str));
       }
 
@@ -115,10 +116,17 @@ $(function () {
     // socket.on('seq-num', function(msg,cur_time){
     //   $('#messages').append($('<li>').text(msg));
     // });
+    // 
+    socket.on('color change', function(user){
+      $('#messages').empty();
+      var msgbox = document.getElementById("messages");
+      msgbox.scrollTop = msgbox.scrollHeight;
+    });  
+
 
     // User Disconnect
     socket.on('user disconnect', function(user){
-      $('#messages').append($('<li>').text(`${user.name} has disconnected`));
+      $('#messages').append($(`<li> <span style="color: #${user.color}">${user.name}</span> has disconnected</li>`));
       var msgbox = document.getElementById("messages");
       msgbox.scrollTop = msgbox.scrollHeight;
     });  
