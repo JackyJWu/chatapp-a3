@@ -10,14 +10,11 @@ app.use(express.static('public'))
 
 // Connect Socket ID to a cookie
 let clients = new Map();
-
-
 // Connect Cookie to a username
 let usernames = new Map();
 
-let anon_user = 0;
-// History
-let history = [];
+let anon_user = 0; //Create user
+let history = []; //Message History
 
 
 app.get('/', (req, res) => {
@@ -29,7 +26,13 @@ app.get('/', (req, res) => {
 // TimeStamp
 function time_stamp() {
 	timestamp = new Date();
-	return timestamp.getHours() + ":" +  timestamp.getMinutes();
+	let hour = timestamp.getHours();
+	let min = timestamp.getMinutes();
+	min = min < 10 ? '0'+min : min;
+	let pmam = hour >= 12 ? 'PM' : 'AM';
+	hour = hour % 12;
+	hour = hour ? hour : '12';
+	return hour + ":" +  min + pmam;
 }
 
 /* Get cookie
@@ -60,7 +63,6 @@ function username_exist(username) {
 			return true
 		}
 	}
-
 	return false;
 }
 
@@ -108,11 +110,9 @@ io.on('connection', (socket) => {
 			timestamp: time_stamp(),
 			type: 'disconnect'
 		}
-		console.log("JACKYWU", msg);
 		msg_to_history(msg);
 
 		io.emit('user disconnect', msg);
-	  
 		clients.delete(socket.id);
 	});
 
@@ -149,9 +149,14 @@ io.on('connection', (socket) => {
 					msg.user.name = msg.message;
 					usernames.set(msg.cookie, user);
 					msg.message = `${old_name} has changed his name to ${msg.user.name}`
+					msg_to_history(msg);
+					io.emit('chat message', msg);
+				}else{
+					msg.message = `The username "${msg.message}" has been taken`
+					socket.emit('chat message', msg);
 				}
-				msg_to_history(msg);
-				io.emit('chat message', msg);
+
+				// io.emit('chat message', msg);
 			}else{
 				msg_to_history(msg);
 				io.emit('chat message', msg);
