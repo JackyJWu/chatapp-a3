@@ -166,6 +166,15 @@ io.on('connection', (socket) => {
 	
 
 	//Update username
+	function username_taken(username, currentuser){
+		for (let [key, value] of clients) {
+			if(usernames.get(value).name == username && key != currentuser){
+				return true
+			}
+		}
+		return false
+	}
+
 	socket.on('cookie success', (msg) => {		
 		// If user name doesnt exist, we set it to anon user 
 		if (!usernames.has(msg)){
@@ -174,11 +183,19 @@ io.on('connection', (socket) => {
 				color: "000000"
 			}
 
-			// name = "anon_user" + anon_user.toString();
 			anon_user +=1;
 			usernames.set(msg, user);
-		}else{
+		}
+		else{
 			user = usernames.get(msg);
+			// If username is taken, randomly assign a username
+			console.log("test");
+			if (username_taken(user.name, msg)){
+				user.name = "anon_user" + anon_user.toString()
+				anon_user +=1;
+				usernames.set(msg,user);
+			}
+
 		}
 		clients.set(socket.id, msg)
 		output_history(socket);
