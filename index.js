@@ -50,13 +50,32 @@ function get_username(socket_id) {
 	return user;
 }
 
-/* Get username from cookie
-* param takes in a socketid
-* returns a username if there is.
+/* Add message to history
+*  param takes a message type
+*  updates history
+*  only keeps past 200 liens
 */
-function get_user(cookie) {
-	let user = usernames.get(cookie);
-	return user;
+
+function msg_to_history(msg) {
+	if (history.length == 200){
+		history.shift()
+	}
+	history.push(msg);
+}
+
+// Function to print history
+function output_history(socket){
+	for (iter in history){
+		if (history[iter].type == "message"){
+			socket.emit('chat message', history[iter]);
+		}
+		else if (history[iter].type == "disconnect"){
+			socket.emit('user disconnect', history[iter]);
+		}
+		else if (history[iter].type == "join"){
+			socket.emit('user join', history[iter]);
+		}
+	}
 }
 
 
@@ -66,11 +85,21 @@ io.on('connection', (socket) => {
 	io.emit('set cookie', socket.id, time_stamp());
 
 	// current hours
-	socket.on('disconnect', (msg) => {
-	  let user = get_username(socket.id);
-	  io.emit('user disconnect', user);
+	socket.on('disconnect', (status) => {
+		let user = get_username(socket.id);
+		
+
+		let msg = {
+			user: get_username(socket.id),
+			timestamp: time_stamp(),
+			type: 'disconnect'
+		}
+		console.log("JACKYWU", msg);
+		msg_to_history(msg);
+
+		io.emit('user disconnect', msg);
 	  
-	  clients.delete(socket.id);
+		clients.delete(socket.id);
 	});
 
 	socket.on('chat message', (msg) => {
@@ -97,19 +126,10 @@ io.on('connection', (socket) => {
 				msg.message = "Color has been changed";
 			}
 			io.emit('color change', msg);
-			for (iter in history){
-				//Update the user color
-				// let messenger = get_user(history[iter].cookie);
-	
-				io.emit('chat message', history[iter])
-			}
+			output_history(io);
 			socket.emit('chat message', msg);
 		}else{ // Public messages we send to all users
-			// Removes the oldest line when history has 200 lines
-			if (history.length == 200){
-				history.shift()
-			}
-			history.push(msg);
+			msg_to_history(msg);
 			io.emit('chat message', msg);
 		}
 
@@ -135,23 +155,14 @@ io.on('connection', (socket) => {
 			user = usernames.get(msg);
 		}
 		clients.set(socket.id, msg)
-		for (iter in history){
-			//Update the user color
-			// let messenger = get_user(history[iter].cookie);
-
-			socket.emit('chat message', history[iter])
-		}
+		output_history(socket);
 		msg_obj = {
 			user: user,
-			timestamp: time_stamp()
+			timestamp: time_stamp(),
+			type: 'join'
 		};
+		msg_to_history(msg_obj);
 		io.emit('user join', msg_obj);
-		// io.emit('user join', name, time_stamp());
-		
-		// for (msg in history){
-		// 	socket.emit('chat message', msg)
-		// }
-		// io.emit('chat message', msg, time_stamp());
 	});
 });
 
@@ -165,12 +176,6 @@ setInterval(() => {
 	// date_ob = new Date();
 	// console.log(time_stamp());
 }, 1000);
-
-// io.emit('some event', { someProperty: 'some value', otherProperty: 'other value' }); // This will emit the event to all connected sockets
-
-// io.on('connection', (socket) => {
-// 	socket.broadcast.emit('hi');
-//   });
 
 http.listen(3000, () => {
 	console.log('listening on *:3000');
