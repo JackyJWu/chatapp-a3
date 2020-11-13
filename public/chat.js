@@ -104,7 +104,6 @@ $(function () {
     // Message is entered
     socket.on('chat message', function(msg){
       // Printing your own message
-      console.log("TEST1", msg)
       if (extract_cookie() == msg.cookie){
         if (msg.type == "message"){
           console.log("VALUE", msg.user);
@@ -135,13 +134,17 @@ $(function () {
       $('#messages').empty();
       var msgbox = document.getElementById("messages");
       msgbox.scrollTop = msgbox.scrollHeight;
-      $('#activeusers').empty();
+      // $('#activeusers').empty();
     });  
     socket.on('name display', function(msg){      
       $('#namedisplay').text(msg.user.name)
       $('#namedisplay').css('color', `#${msg.user.color}`);
-      $('#activeusers').empty();
+      // $('#activeusers').empty();
     });  
+
+    socket.on('update active', function(msg){
+      $('#activeusers').empty();
+    });
 
 
 
@@ -152,6 +155,6 @@ $(function () {
         var msgbox = document.getElementById("messages");
         msgbox.scrollTop = msgbox.scrollHeight;
       }
-      $('#activeusers').empty();
+      // $('#activeusers').empty();
     });  
   });

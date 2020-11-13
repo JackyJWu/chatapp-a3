@@ -91,7 +91,6 @@ function msg_to_history(msg) {
 // Function to print history
 function output_history(socket){
 	for (iter in history){
-		console.log("JACKYwUb",history[iter])
 		if (history[iter].type == "message" || history[iter].type == "name"){
 			socket.emit('chat message', history[iter]);
 		}
@@ -112,9 +111,8 @@ io.on('connection', (socket) => {
 
 	// current hours
 	socket.on('disconnect', (status) => {
+		io.emit('update active'); // Remove user from active list
 		let user = get_username(socket.id);
-		
-
 		let msg = {
 			user: get_username(socket.id),
 			timestamp: time_stamp(),
@@ -145,16 +143,13 @@ io.on('connection', (socket) => {
 
 		if (!msg.display){	// Private messages, we just sent back to the user
 			if (msg.type == "color"){
-				console.log("HEY")
+				io.emit('update active'); // Remove user from active list
 				let user = usernames.get(msg.cookie);
-				
 				user.color = msg.message; 
 				usernames.set(msg.cookie, user);
 				msg.message = "Color has been changed";
 				msg.user = usernames.get(msg.cookie);
 				socket.emit('name display', msg)
-
-				console.log(msg.user);
 			}
 			io.emit('color change', msg);
 			output_history(io);
@@ -163,6 +158,7 @@ io.on('connection', (socket) => {
 		}else{ // Public messages we send to all users
 			if (msg.type == "name"){
 				if (!username_exist(msg.message)){
+					io.emit('update active'); // Remove user from active list
 					let old_name = msg.user.name
 					msg.user.name = msg.message;
 					usernames.set(msg.cookie, user);
