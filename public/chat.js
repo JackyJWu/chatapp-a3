@@ -136,7 +136,8 @@ $(function () {
       msgbox.scrollTop = msgbox.scrollHeight;
       // $('#activeusers').empty();
     });  
-    socket.on('name display', function(msg){      
+    socket.on('name display', function(msg){   
+      console.log("JACKYWO", msg);   
       $('#namedisplay').text(msg.user.name)
       $('#namedisplay').css('color', `#${msg.user.color}`);
       // $('#activeusers').empty();

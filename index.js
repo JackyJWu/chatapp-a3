@@ -163,11 +163,11 @@ io.on('connection', (socket) => {
 					console.log("JACKY WU DOG", msg)
 					let old_name = msg.user.name
 					msg.user.name = msg.message;
-					usernames.set(msg.cookie, user);
+					usernames.set(msg.cookie, msg.user);
 					msg.message = `${old_name} has changed his name to ${msg.user.name}`
+					socket.emit('name display', msg)
 					msg.user = ""
 					msg_to_history(msg);
-					socket.emit('name display', msg_obj) // THis is where the bug is. We don't have something that clears all, only this one 
 					io.emit('chat message', msg);
 				}else{
 					msg.message = `The username "${msg.message}" has been taken`
