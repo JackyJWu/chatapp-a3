@@ -195,6 +195,7 @@ io.on('connection', (socket) => {
 		}
 		else{
 			user = usernames.get(msg);
+			console.log("JACKY WU", user);
 			// If username is taken, randomly assign a username
 			console.log("test");
 			if (username_taken(user.name, msg)){

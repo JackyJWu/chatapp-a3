@@ -118,8 +118,11 @@ $(function () {
     // User Disconnect
     socket.on('user disconnect', function(msg){
       console.log(msg, "JACKYWU")
-      $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}; font-size: 15px;">${msg.user.name}</span> has disconnected</li>`));
-      var msgbox = document.getElementById("messages");
-      msgbox.scrollTop = msgbox.scrollHeight;
+      if (msg.user != null){
+        $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}; font-size: 15px;">${msg.user.name}</span> has disconnected</li>`));
+        var msgbox = document.getElementById("messages");
+        msgbox.scrollTop = msgbox.scrollHeight;
+      }
+
     });  
   });
