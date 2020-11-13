@@ -156,9 +156,10 @@ io.on('connection', (socket) => {
 			socket.emit('chat message', msg);
 			update_activeusers();
 		}else{ // Public messages we send to all users
+			io.emit('update active'); // Remove user from active list
+
 			if (msg.type == "name"){
 				if (!username_exist(msg.message)){
-					io.emit('update active'); // Remove user from active list
 					console.log("JACKY WU DOG", msg)
 					let old_name = msg.user.name
 					msg.user.name = msg.message;
@@ -168,7 +169,6 @@ io.on('connection', (socket) => {
 					msg_to_history(msg);
 					socket.emit('name display', msg_obj) // THis is where the bug is. We don't have something that clears all, only this one 
 					io.emit('chat message', msg);
-					update_activeusers();
 				}else{
 					msg.message = `The username "${msg.message}" has been taken`
 					socket.emit('chat message', msg);
@@ -178,6 +178,7 @@ io.on('connection', (socket) => {
 				msg_to_history(msg);
 				io.emit('chat message', msg);
 			}
+			update_activeusers();
 
 		}
 
