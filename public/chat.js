@@ -36,11 +36,9 @@ $(function () {
       }
       // Submit button case handle
       let words = $('#m').val().split(" ")
-      console.log("JACKSYS")
       // Handle emoji
       for (let i = 0; i < words.length; i++){
         if (emoji[words[i]] !== undefined){
-          console.log("test");
           words[i] = emoji[words[i]];
         }
       }
@@ -108,16 +106,28 @@ $(function () {
       // Printing your own message
       if (extract_cookie() == msg.cookie){
         if (msg.type == "message"){
+          console.log("TESTING", msg)
           $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}; font-size: 15px;">${msg.user.name}</span>: <b>${msg.message}</b></li>`));
 
         }else if (msg.type == "name"){
+          console.log("TESTING2", message)
+
           $('#messages').append($(`<li>[${msg.timestamp}] <b>${msg.message}</b></li>`));
 
         }
 
       }else{ // Print message from somebody else
-        msg_str = "[" + msg.timestamp+ "] "+ msg.user.name +":" +msg.message;
-        $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}; font-size: 15px;">${msg.user.name}</span>: ${msg.message}</li>`));
+
+        if (msg.type == "message"){
+          $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}; font-size: 15px;">${msg.user.name}</span>: ${msg.message}</li>`));
+
+
+        }else if (msg.type == "name"){
+
+
+          $('#messages').append($(`<li>[${msg.timestamp}] ${msg.message}</li>`));
+
+        }
       }
 
       // Scroll down when new message
@@ -143,7 +153,6 @@ $(function () {
 
     // User Disconnect
     socket.on('user disconnect', function(msg){
-      console.log(msg, "JACKYWU")
       if (msg.user != null){
         $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}; font-size: 15px;">${msg.user.name}</span> has disconnected</li>`));
         var msgbox = document.getElementById("messages");

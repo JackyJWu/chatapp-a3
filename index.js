@@ -16,12 +16,6 @@ let usernames = new Map();
 let anon_user = 0; //Create user
 let history = []; //Message History
 
-let emoji = {
-	':)': '&#128513;',
-	':(': '&#128577;',
-	':o': '&#128558;'
-}
-
 app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/public/index.html');
 });
@@ -97,6 +91,7 @@ function msg_to_history(msg) {
 // Function to print history
 function output_history(socket){
 	for (iter in history){
+		console.log("JACKYwUb",history[iter])
 		if (history[iter].type == "message" || history[iter].type == "name"){
 			socket.emit('chat message', history[iter]);
 		}
@@ -181,7 +176,6 @@ io.on('connection', (socket) => {
 					socket.emit('chat message', msg);
 				}
 
-				// io.emit('chat message', msg);
 			}else{
 				msg_to_history(msg);
 				io.emit('chat message', msg);
@@ -198,7 +192,7 @@ io.on('connection', (socket) => {
 	//Update username
 	function username_taken(username, currentuser){
 		for (let [key, value] of clients) {
-			if(usernames.get(value).name == username && key != currentuser){
+			if(usernames.get(value).name == username && value != currentuser){
 				return true
 			}
 		}
@@ -207,7 +201,6 @@ io.on('connection', (socket) => {
 
 	socket.on('cookie success', (msg) => {		
 		// If user name doesnt exist, we set it to anon user 
-		console.log("jacky", msg);
 		if (!usernames.has(msg)){
 			user = {
 				name: "anon_user" + anon_user.toString(),
@@ -220,7 +213,7 @@ io.on('connection', (socket) => {
 		else{
 			user = usernames.get(msg);
 			// If username is taken, randomly assign a username
-			console.log("test");
+			console.log("test", usernames);
 			if (username_taken(user.name, msg)){ // This function is broken
 				user.name = "anon_user" + anon_user.toString()
 				anon_user +=1;
@@ -240,7 +233,6 @@ io.on('connection', (socket) => {
 		io.emit('user join', msg_obj);
 
 		update_activeusers()
-		// io.emit('active users', users)
 	});
 });
 
