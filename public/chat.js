@@ -16,6 +16,12 @@ function isHex (hex) {
       && !isNaN(Number('0x' + hex))
 }
 
+let emoji = {
+	':)': '&#128513;',
+	':(': '&#128577;',
+	':o': '&#128558;'
+}
+
 $(function () {
     var socket = io();
     // Handle Input
@@ -30,6 +36,15 @@ $(function () {
       }
       // Submit button case handle
       let words = $('#m').val().split(" ")
+      console.log("JACKSYS")
+      // Handle emoji
+      for (let i = 0; i < words.length; i++){
+        if (emoji[words[i]] !== undefined){
+          console.log("test");
+          words[i] = emoji[words[i]];
+        }
+      }
+      msg.message = words.join(" ");
       // Handle when user types new name
       if (words[0] == "/name"){
         console.log(msg);
@@ -114,12 +129,14 @@ $(function () {
       $('#messages').empty();
       var msgbox = document.getElementById("messages");
       msgbox.scrollTop = msgbox.scrollHeight;
+      $('#activeusers').empty();
     });  
     socket.on('name display', function(msg){
       console.log(msg.user)
       
       $('#namedisplay').text(msg.user.name)
       $('#namedisplay').css('color', `#${msg.user.color}`);
+      $('#activeusers').empty();
     });  
 
 

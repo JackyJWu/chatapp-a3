@@ -16,6 +16,11 @@ let usernames = new Map();
 let anon_user = 0; //Create user
 let history = []; //Message History
 
+let emoji = {
+	':)': '&#128513;',
+	':(': '&#128577;',
+	':o': '&#128558;'
+}
 
 app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/public/index.html');
@@ -152,10 +157,13 @@ io.on('connection', (socket) => {
 				msg.message = "Color has been changed";
 				msg.user = usernames.get(msg.cookie);
 				socket.emit('name display', msg)
+
+				
 			}
 			io.emit('color change', msg);
 			output_history(io);
 			socket.emit('chat message', msg);
+			update_activeusers();
 		}else{ // Public messages we send to all users
 			if (msg.type == "name"){
 				if (!username_exist(msg.message)){
@@ -167,6 +175,7 @@ io.on('connection', (socket) => {
 					msg_to_history(msg);
 					socket.emit('name display', msg_obj)
 					io.emit('chat message', msg);
+					update_activeusers();
 				}else{
 					msg.message = `The username "${msg.message}" has been taken`
 					socket.emit('chat message', msg);
@@ -198,6 +207,7 @@ io.on('connection', (socket) => {
 
 	socket.on('cookie success', (msg) => {		
 		// If user name doesnt exist, we set it to anon user 
+		console.log("jacky", msg);
 		if (!usernames.has(msg)){
 			user = {
 				name: "anon_user" + anon_user.toString(),
@@ -209,10 +219,9 @@ io.on('connection', (socket) => {
 		}
 		else{
 			user = usernames.get(msg);
-			console.log("JACKY WU", user);
 			// If username is taken, randomly assign a username
 			console.log("test");
-			if (username_taken(user.name, msg)){
+			if (username_taken(user.name, msg)){ // This function is broken
 				user.name = "anon_user" + anon_user.toString()
 				anon_user +=1;
 				usernames.set(msg,user);
