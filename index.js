@@ -127,16 +127,6 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('chat message', (msg) => {
-		/*
-		let msg_obj = {
-			message: msg.message,
-			cookie: msg.cookie,
-			display: msg.display,
-			type: msg.type,
-			username: usernames.get(msg.cookie),
-			timestamp: time_stamp()
-		}
-		*/
 		// Backend retrieves username from cookie and sets timestamp
 		msg.user = usernames.get(msg.cookie);
 		msg.timestamp = time_stamp();
@@ -151,7 +141,7 @@ io.on('connection', (socket) => {
 				msg.user = usernames.get(msg.cookie);
 				socket.emit('name display', msg)
 			}
-			io.emit('color change', msg);
+			io.emit('clear message', msg);
 			output_history(io);
 			socket.emit('chat message', msg);
 			update_activeusers();
@@ -160,7 +150,6 @@ io.on('connection', (socket) => {
 
 			if (msg.type == "name"){
 				if (!username_exist(msg.message)){
-					console.log("JACKY WU DOG", msg)
 					let old_name = msg.user.name
 					msg.user.name = msg.message;
 					usernames.set(msg.cookie, msg.user);
@@ -235,17 +224,6 @@ io.on('connection', (socket) => {
 		update_activeusers()
 	});
 });
-
-// sends each client its current sequence number
-setInterval(() => {
-
-    // for (const [client, sequenceNumber] of clients.entries()) {
-    //     client.emit("seq-num", sequenceNumber);
-    //     clients.set(client, sequenceNumber + 1);
-	// }
-	// date_ob = new Date();
-	// console.log(time_stamp());
-}, 1000);
 
 http.listen(3000, () => {
 	console.log('listening on *:3000');

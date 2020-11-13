@@ -2,7 +2,6 @@ function extract_cookie(){
   let unique_id = null;
   document.cookie.split(';').forEach(value => {
     if (value.trim().startsWith('unique_user')){
-      // console.log(value.split('=')[1]);
       unique_id = value.split('=')[1];
     }
   });
@@ -45,7 +44,6 @@ $(function () {
       msg.message = words.join(" ");
       // Handle when user types new name
       if (words[0] == "/name"){
-        console.log(msg);
         if (words.length >1){
           words.shift();
           msg.message = words.join(" ");
@@ -106,7 +104,6 @@ $(function () {
       // Printing your own message
       if (extract_cookie() == msg.cookie){
         if (msg.type == "message"){
-          console.log("VALUE", msg.user);
           $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}; font-size: 15px;">${msg.user.name}</span>: <b>${msg.message}</b></li>`));
         }else if (msg.type == "name"){
           $('#messages').append($(`<li>[${msg.timestamp}] <b>${msg.message}</b></li>`));
@@ -130,14 +127,13 @@ $(function () {
       msgbox.scrollTop = msgbox.scrollHeight;
     });
 
-    socket.on('color change', function(user){
+    socket.on('clear message', function(user){
       $('#messages').empty();
       var msgbox = document.getElementById("messages");
       msgbox.scrollTop = msgbox.scrollHeight;
       // $('#activeusers').empty();
     });  
     socket.on('name display', function(msg){   
-      console.log("JACKYWO", msg);   
       $('#namedisplay').text(msg.user.name)
       $('#namedisplay').css('color', `#${msg.user.color}`);
       // $('#activeusers').empty();
