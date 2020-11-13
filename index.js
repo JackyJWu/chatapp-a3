@@ -56,7 +56,7 @@ function get_username(socket_id) {
 * returns true if username exists and false otherwise
 */
 function username_exist(username) {
-
+	// We iterate through all the connected clients and check if there is any client with the current name
 	for (let [key, value] of clients) {
 		if(usernames.get(value).name == username){
 			return true
@@ -159,6 +159,7 @@ io.on('connection', (socket) => {
 			if (msg.type == "name"){
 				if (!username_exist(msg.message)){
 					io.emit('update active'); // Remove user from active list
+					console.log("JACKY WU DOG", msg)
 					let old_name = msg.user.name
 					msg.user.name = msg.message;
 					usernames.set(msg.cookie, user);
@@ -198,6 +199,7 @@ io.on('connection', (socket) => {
 
 	socket.on('cookie success', (msg) => {		
 		// If user name doesnt exist, we set it to anon user 
+		io.emit('update active'); // Clear active list
 		if (!usernames.has(msg)){
 			user = {
 				name: "anon_user" + anon_user.toString(),
@@ -210,7 +212,6 @@ io.on('connection', (socket) => {
 		else{
 			user = usernames.get(msg);
 			// If username is taken, randomly assign a username
-			console.log("test", usernames);
 			if (username_taken(user.name, msg)){ // This function is broken
 				user.name = "anon_user" + anon_user.toString()
 				anon_user +=1;
@@ -218,6 +219,7 @@ io.on('connection', (socket) => {
 			}
 
 		}
+		
 		clients.set(socket.id, msg)
 		output_history(socket);
 		msg_obj = {
