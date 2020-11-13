@@ -107,6 +107,12 @@ $(function () {
       var msgbox = document.getElementById("messages");
       msgbox.scrollTop = msgbox.scrollHeight;
     });  
+    socket.on('name display', function(msg){
+      console.log("JAK", msg);
+      console.log(msg.user)
+      $('#namedisplay').text(msg.user.name)
+    });  
+
 
 
     // User Disconnect

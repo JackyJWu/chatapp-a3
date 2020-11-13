@@ -82,7 +82,7 @@ function msg_to_history(msg) {
 // Function to print history
 function output_history(socket){
 	for (iter in history){
-		if (history[iter].type == "message"){
+		if (history[iter].type == "message" || history[iter].type == "name"){
 			socket.emit('chat message', history[iter]);
 		}
 		else if (history[iter].type == "disconnect"){
@@ -149,7 +149,9 @@ io.on('connection', (socket) => {
 					msg.user.name = msg.message;
 					usernames.set(msg.cookie, user);
 					msg.message = `${old_name} has changed his name to ${msg.user.name}`
+					msg.user = ""
 					msg_to_history(msg);
+					socket.emit('name display', msg_obj)
 					io.emit('chat message', msg);
 				}else{
 					msg.message = `The username "${msg.message}" has been taken`
@@ -210,6 +212,7 @@ io.on('connection', (socket) => {
 			type: 'join'
 		};
 		msg_to_history(msg_obj);
+		socket.emit('name display', msg_obj)
 		io.emit('user join', msg_obj);
 	});
 });

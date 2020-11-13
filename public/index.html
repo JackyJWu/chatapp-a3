@@ -6,14 +6,24 @@
   </head>
 
   <body>
+
     <div class="border">
+      <div class="container">
+        <div id="userinfo">
+          <h1 id="namedisplay"></h1>
+        </div>
+        <div id="activeuser">
+
+        </div>
+      </div>
       <ul id="messages"></ul>
+      <div class ="chatbox">
+        <form action="">
+            <input id="m" autocomplete="off" /><button>Send</button>
+        </form>
+      </div>
     </div>
-    <div class ="chatbox">
-      <form action="">
-          <input id="m" autocomplete="off" /><button>Send</button>
-      </form>
-    </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="/chat.js"></script>
