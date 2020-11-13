@@ -1,24 +1,27 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Socket.IO chat</title>
-    <link rel="stylesheet" type="text/css" href="style.css" media="screen"/>
-  </head>
 
-  <body>
+<head>
+  <title>Socket.IO chat</title>
+  <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
+</head>
+
+<body>
 
 
-    <div class="border">
+  <!-- <div class="border">
       <div class="container">
         <div id="userinfo">
           <h1 id="namedisplay"></h1>
         </div>
-        <!-- <div id="activeuser"></div> -->
+
       </div>
       
       <div class="msgactive">
         <ul id="messages"></ul>
-        <div id=sidebar>
+        <div id="sidebar">
           <h1>Active Users</h1>
           <ul id="activeusers"></ul>
         </div>
@@ -29,27 +32,39 @@
             <input id="m" autocomplete="off" /><button>Send</button>
         </form>
       </ul>
-    </div>
+    </div>  -->
+  <div class="border">
 
-      
-      <!-- <div class="msgactive">
-        <ul id="messages"></ul>
-        <div id=sidebar>
-          <h1>Active Users</h1>
-          <ul id="activeusers">
-          </ul>
-        </div>
-      </div> -->
+    <header class="header">
 
-      <!-- <ul class ="chatbox">
-        <form action="">
-            <input id="m" autocomplete="off" /><button>Send</button>
-        </form>
-      </ul>
-    </div> -->
+      <div id="userinfo">
+        <h1 id="namedisplay"></h1>
+      </div>
+    </header>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="/chat.js"></script>
-  </body>
+    <main>
+      <div id="something">
+        <h3>Active Users</h3>
+        <ul id="activeusers"></ul>
+      </div>
+      <div id="messages">
+
+      </div>
+
+
+    </main>
+    <footer>
+      <form action="">
+        <input id="m" autocomplete="off" placeholder="Message here" />
+        <!-- <button>Send</button> -->
+      </form>
+    </footer>
+  </div>
+
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="/chat.js"></script>
+</body>
+
 </html>

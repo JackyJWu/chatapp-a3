@@ -104,27 +104,23 @@ $(function () {
     // Message is entered
     socket.on('chat message', function(msg){
       // Printing your own message
+      console.log("TEST1", msg)
       if (extract_cookie() == msg.cookie){
         if (msg.type == "message"){
-          console.log("TESTING", msg)
+          console.log("VALUE", msg.user);
           $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}; font-size: 15px;">${msg.user.name}</span>: <b>${msg.message}</b></li>`));
-
         }else if (msg.type == "name"){
-          console.log("TESTING2", message)
-
           $('#messages').append($(`<li>[${msg.timestamp}] <b>${msg.message}</b></li>`));
-
+        }else{
+          $('#messages').append($(`<li>[${msg.timestamp}] <b>${msg.message}</b></li>`));
         }
 
       }else{ // Print message from somebody else
-
         if (msg.type == "message"){
           $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}; font-size: 15px;">${msg.user.name}</span>: ${msg.message}</li>`));
-
-
         }else if (msg.type == "name"){
-
-
+          $('#messages').append($(`<li>[${msg.timestamp}] ${msg.message}</li>`));
+        }else{
           $('#messages').append($(`<li>[${msg.timestamp}] ${msg.message}</li>`));
 
         }
@@ -141,9 +137,7 @@ $(function () {
       msgbox.scrollTop = msgbox.scrollHeight;
       $('#activeusers').empty();
     });  
-    socket.on('name display', function(msg){
-      console.log(msg.user)
-      
+    socket.on('name display', function(msg){      
       $('#namedisplay').text(msg.user.name)
       $('#namedisplay').css('color', `#${msg.user.color}`);
       $('#activeusers').empty();

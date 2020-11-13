@@ -145,6 +145,7 @@ io.on('connection', (socket) => {
 
 		if (!msg.display){	// Private messages, we just sent back to the user
 			if (msg.type == "color"){
+				console.log("HEY")
 				let user = usernames.get(msg.cookie);
 				
 				user.color = msg.message; 
@@ -153,7 +154,7 @@ io.on('connection', (socket) => {
 				msg.user = usernames.get(msg.cookie);
 				socket.emit('name display', msg)
 
-				
+				console.log(msg.user);
 			}
 			io.emit('color change', msg);
 			output_history(io);
@@ -168,7 +169,7 @@ io.on('connection', (socket) => {
 					msg.message = `${old_name} has changed his name to ${msg.user.name}`
 					msg.user = ""
 					msg_to_history(msg);
-					socket.emit('name display', msg_obj)
+					socket.emit('name display', msg_obj) // THis is where the bug is. We don't have something that clears all, only this one 
 					io.emit('chat message', msg);
 					update_activeusers();
 				}else{
