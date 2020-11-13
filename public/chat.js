@@ -66,7 +66,15 @@ $(function () {
       $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}; font-size: 15px;">${msg.user.name}</span> has joined the room</li>`));      
       var msgbox = document.getElementById("messages");
       msgbox.scrollTop = msgbox.scrollHeight;
+      $('#activeusers').empty();
     });
+
+    socket.on('active users', function(user){
+      $('#activeusers').append($(`<li> <span style="color: #${user.color}; font-size: 15px;">${user.name}</span></li>`));      
+      // var msgbox = document.getElementById("messages");
+      // msgbox.scrollTop = msgbox.scrollHeight;
+    });
+
 
       // Handle Cookie
     if (document.cookie.split(';').some((item) => item.trim().startsWith('unique_user='))) {
@@ -108,9 +116,10 @@ $(function () {
       msgbox.scrollTop = msgbox.scrollHeight;
     });  
     socket.on('name display', function(msg){
-      console.log("JAK", msg);
       console.log(msg.user)
+      
       $('#namedisplay').text(msg.user.name)
+      $('#namedisplay').css('color', `#${msg.user.color}`);
     });  
 
 
@@ -123,6 +132,6 @@ $(function () {
         var msgbox = document.getElementById("messages");
         msgbox.scrollTop = msgbox.scrollHeight;
       }
-
+      $('#activeusers').empty();
     });  
   });

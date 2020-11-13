@@ -66,6 +66,16 @@ function username_exist(username) {
 	return false;
 }
 
+/*
+* updates active users
+*/
+function update_activeusers() {
+	for (let [key, value] of clients) {
+		let active_user = usernames.get(value);
+		io.emit('active users', active_user);
+	}
+}
+
 /* Add message to history
 *  param takes a message type
 *  updates history
@@ -112,8 +122,10 @@ io.on('connection', (socket) => {
 		}
 		msg_to_history(msg);
 
+		// Fix bug
 		io.emit('user disconnect', msg);
 		clients.delete(socket.id);
+		update_activeusers();
 	});
 
 	socket.on('chat message', (msg) => {
@@ -138,6 +150,8 @@ io.on('connection', (socket) => {
 				user.color = msg.message; 
 				usernames.set(msg.cookie, user);
 				msg.message = "Color has been changed";
+				msg.user = usernames.get(msg.cookie);
+				socket.emit('name display', msg)
 			}
 			io.emit('color change', msg);
 			output_history(io);
@@ -215,6 +229,9 @@ io.on('connection', (socket) => {
 		msg_to_history(msg_obj);
 		socket.emit('name display', msg_obj)
 		io.emit('user join', msg_obj);
+
+		update_activeusers()
+		// io.emit('active users', users)
 	});
 });
 

@@ -7,7 +7,17 @@
 
 body { 
     font: 13px Helvetica, Arial; 
+    overflow: hidden;
 }
+
+/* Comment this out right now and focus on features */
+.border {
+    margin: auto;
+    max-width: 960px;
+    height: 100vh;
+    border: 1px black solid
+}
+
 
 form { 
     background: #000; 
@@ -35,17 +45,22 @@ form button {
     padding: 10px; 
 }
 
+.msgactive {
+    width: 100%;
+    margin: auto;
+    display: flex;
+}
+
 #messages { 
     list-style-type: none; 
     margin: 0; 
     padding: 0;
     overflow: scroll;
-    width: 100%;
-    height: 88vh;
-    /* height: 95vh; */
+    width: 80%;
+    height: 86vh;
+    /* height: 80%; */
     position: relative;
     border: 1px black solid;
-    /* bottom: 45px; */
 }
 
 #messages li { 
@@ -56,15 +71,39 @@ form button {
     background: #eee; 
 }
 
+#sidebar {
+    margin: 0; 
+    padding: 0;
+    width: 20%;
+    position: relative;
+    float:right;
+}
+#sidebar h1 {
+    text-align: center;
+    margin-top: 2px;
+}
+
+#activeusers { 
+    list-style-type: none; 
+    margin: 0; 
+    padding: 0;
+    overflow: scroll;
+    height: 82.75vh;
+
+    border: 2px green solid
+}
+#activeusers li { 
+    padding: 5px 10px; 
+}
+
+#activeusers li:nth-child(odd) { 
+    background: #eee; 
+}
+
 .chatbox {
     width:100%;
 }
 
-/* Comment this out right now and focus on features */
-.border {
-    margin: auto;
-    width: 960px;
-}
 
 .container {
     width: 100%;
@@ -72,10 +111,10 @@ form button {
 }
 
 #userinfo {
-    width: 50%;
+    width: 100%;
     float: left;
     height: 10vh;
-    background-color: blue;
+    background-color: red;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -89,7 +128,7 @@ form button {
 }
 #activeuser {
     width: 50%;
-    float: left;
+    float: right;
     height: 10vh;
     background-color: green;
     color: white;

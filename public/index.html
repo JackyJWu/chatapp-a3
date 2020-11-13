@@ -7,22 +7,46 @@
 
   <body>
 
+
     <div class="border">
       <div class="container">
         <div id="userinfo">
           <h1 id="namedisplay"></h1>
         </div>
-        <div id="activeuser">
-
+        <!-- <div id="activeuser"></div> -->
+      </div>
+      
+      <div class="msgactive">
+        <ul id="messages"></ul>
+        <div id=sidebar>
+          <h1>Active Users</h1>
+          <ul id="activeusers"></ul>
         </div>
       </div>
-      <ul id="messages"></ul>
-      <div class ="chatbox">
+
+      <ul class ="chatbox">
         <form action="">
             <input id="m" autocomplete="off" /><button>Send</button>
         </form>
-      </div>
+      </ul>
     </div>
+
+      
+      <!-- <div class="msgactive">
+        <ul id="messages"></ul>
+        <div id=sidebar>
+          <h1>Active Users</h1>
+          <ul id="activeusers">
+          </ul>
+        </div>
+      </div> -->
+
+      <!-- <ul class ="chatbox">
+        <form action="">
+            <input id="m" autocomplete="off" /><button>Send</button>
+        </form>
+      </ul>
+    </div> -->
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
