@@ -17,6 +17,15 @@ function check_hex (hex) {
 
 }
 
+function incorrect_slash(cmd){
+  if (cmd.charAt(0) == '/'){
+    if (cmd == '/color' || cmd == '/name'){
+      return false
+    }
+  }
+  return true
+}
+
 // Emoji converted
 let emoji = {
 	':)': '&#128513;',
@@ -68,8 +77,15 @@ $(function () {
         }
       }
 
-      socket.emit('chat message', msg);
-      $('#m').val('');
+      // Checks for incorrect commands
+      if (incorrect_slash(words[0])){
+        console.log("incorrect slash command");
+        $('#m').val('');
+      }else{
+        socket.emit('chat message', msg);
+        $('#m').val('');
+      }
+
 
       return false;
     });
