@@ -1,6 +1,11 @@
 var express = require('express');
 var app = express();
 
+// This is for heroku
+// port = process.env.PORT || 80
+port = 3334
+
+
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
@@ -222,9 +227,7 @@ io.on('connection', (socket) => {
 	});
 });
 
-// This is for heroku
-// port = process.env.PORT || 80
-port = 3000
+
 http.listen(port, () => {
-	console.log('listening on *:3000');
+	console.log(`listening on *:${port}`);
 });
