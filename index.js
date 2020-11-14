@@ -222,6 +222,7 @@ io.on('connection', (socket) => {
 	});
 });
 
-http.listen(3000, () => {
+port = process.env.PORT || 80
+http.listen(port, () => {
 	console.log('listening on *:3000');
 });
