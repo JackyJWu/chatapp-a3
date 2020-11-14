@@ -82,6 +82,8 @@ $(function () {
       // Checks for incorrect commands
       if (incorrect_slash(words[0])){
         $('#messages').append($(`<li>Error: <b>${words[0]}</b> is an invalid command</li>`));
+        var msgbox = document.getElementById("messages");
+        msgbox.scrollTop = msgbox.scrollHeight;
         $('#m').val('');
       }else{
         socket.emit('chat message', msg);
