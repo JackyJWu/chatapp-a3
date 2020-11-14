@@ -105,7 +105,7 @@ $(function () {
       // Printing your own message
       if (extract_cookie() == msg.cookie){
         if (msg.type == "message"){
-          $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}; font-size: 15px;">${msg.user.name}</span>: <b>${msg.message}</b></li>`));
+          $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}; font-size: 15px;">${msg.user.name}:</span> <span style="font-weight: 900; color: black;"><b>${msg.message}</b></span></li>`));
         }else if (msg.type == "name"){
           $('#messages').append($(`<li>[${msg.timestamp}] <b>${msg.message}</b></li>`));
         }else{
@@ -114,7 +114,7 @@ $(function () {
 
       }else{ // Print message from somebody else
         if (msg.type == "message"){
-          $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}; font-size: 15px;">${msg.user.name}</span>: ${msg.message}</li>`));
+          $('#messages').append($(`<li>[${msg.timestamp}] <span style="color: #${msg.user.color}; font-size: 15px;">${msg.user.name}:</span> ${msg.message}</li>`));
         }else if (msg.type == "name"){
           $('#messages').append($(`<li>[${msg.timestamp}] ${msg.message}</li>`));
         }else{

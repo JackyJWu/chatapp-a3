@@ -75,6 +75,7 @@ main #messages li {
     padding: 20px 30px;
     margin: 0px 30px;
     border-bottom: 1px #ccc solid;
+    font-size: 15px;
 }
 
 main #messages li:hover {
