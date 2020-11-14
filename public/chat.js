@@ -81,7 +81,7 @@ $(function () {
 
       // Checks for incorrect commands
       if (incorrect_slash(words[0])){
-        console.log("incorrect slash command");
+        $('#messages').append($(`<li>Error: <b>${words[0]}</b> is an invalid command</li>`));
         $('#m').val('');
       }else{
         socket.emit('chat message', msg);
@@ -109,7 +109,12 @@ $(function () {
       // Handle Cookie
     if (document.cookie.split(';').some((item) => item.trim().startsWith('unique_user='))) {
       // Case where cookie exists. If it exists, return cookie value to the server
-      socket.emit('cookie success', extract_cookie());
+
+      socket.on('set cookie', function(msg){
+        document.cookie = `unique_user=${extract_cookie()}`
+        socket.emit('cookie success', extract_cookie());
+
+      });
     }else{
       // New User
       socket.on('set cookie', function(msg){

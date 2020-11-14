@@ -3,7 +3,8 @@ var app = express();
 
 // This is for heroku
 // port = process.env.PORT || 80
-port = 3334
+// port = 3334
+port = 3000;
 
 
 var http = require('http').createServer(app);
@@ -122,7 +123,19 @@ function username_taken(username, currentuser){
 //   User Connects
 io.on('connection', (socket) => {
 	//Handle new connection
-	io.emit('set cookie', socket.id, time_stamp());
+	
+	if (usernames.get(socket.id) == null){
+		socket.emit('set cookie', socket.id, time_stamp());
+
+			// user = {
+			// 	name: "anon_user" + anon_user.toString(),
+			// 	color: "000000"
+			// }
+
+			// anon_user +=1;
+			// usernames.set(msg.cookie, user);
+	}
+	// socket.emit('set cookie', socket.id, time_stamp());
 
 	// current hours
 	socket.on('disconnect', (status) => {
@@ -142,6 +155,7 @@ io.on('connection', (socket) => {
 
 	// Chat message
 	socket.on('chat message', (msg) => {
+		
 		// Backend retrieves username from cookie and sets timestamp
 		msg.user = usernames.get(msg.cookie);
 		msg.timestamp = time_stamp();
