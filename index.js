@@ -2,8 +2,8 @@ var express = require('express');
 var app = express();
 
 // This is for heroku
-// port = process.env.PORT || 80
-port = 3334;
+port = process.env.PORT || 80
+// port = 3334;
 // port = 3000;
 
 
