@@ -1,3 +1,4 @@
+// Extract the cookie value
 function extract_cookie(){
   let unique_id = null;
   document.cookie.split(';').forEach(value => {
@@ -11,10 +12,12 @@ function extract_cookie(){
 // Check hex (Change this before submission)
 function isHex (hex) {
   return typeof hex === 'string'
-      && hex.length === 6
       && !isNaN(Number('0x' + hex))
+      && hex.length === 6
+
 }
 
+// Emoji converted
 let emoji = {
 	':)': '&#128513;',
 	':(': '&#128577;',
@@ -82,8 +85,6 @@ $(function () {
 
     socket.on('active users', function(user){
       $('#activeusers').append($(`<li> <span style="color: #${user.color}; font-size: 15px;">${user.name}</span></li>`));      
-      // var msgbox = document.getElementById("messages");
-      // msgbox.scrollTop = msgbox.scrollHeight;
     });
 
 
@@ -127,22 +128,22 @@ $(function () {
       msgbox.scrollTop = msgbox.scrollHeight;
     });
 
+    // Clear all messages 
     socket.on('clear message', function(user){
       $('#messages').empty();
       var msgbox = document.getElementById("messages");
       msgbox.scrollTop = msgbox.scrollHeight;
-      // $('#activeusers').empty();
     });  
+    // Clear and update the name identifier
     socket.on('name display', function(msg){   
       $('#namedisplay').text(msg.user.name)
       $('#namedisplay').css('color', `#${msg.user.color}`);
-      // $('#activeusers').empty();
     });  
 
+    // Clear and update the active users
     socket.on('update active', function(msg){
       $('#activeusers').empty();
     });
-
 
 
     // User Disconnect
@@ -152,6 +153,5 @@ $(function () {
         var msgbox = document.getElementById("messages");
         msgbox.scrollTop = msgbox.scrollHeight;
       }
-      // $('#activeusers').empty();
     });  
   });

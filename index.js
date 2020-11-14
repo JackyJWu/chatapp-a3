@@ -4,6 +4,7 @@ var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
 
+// Timestamp object
 let timestamp = new Date();
 app.use(express.static('public'))
 
@@ -20,8 +21,6 @@ app.get('/', (req, res) => {
 	res.sendFile(__dirname + '/public/index.html');
 });
   
-
-
 // TimeStamp
 function time_stamp() {
 	timestamp = new Date();
@@ -103,6 +102,17 @@ function output_history(socket){
 	}
 }
 
+//Check all the usernames to see if the requested name is taken
+function username_taken(username, currentuser){
+	for (let [key, value] of clients) {
+		if(usernames.get(value).name == username && value != currentuser){
+			return true
+		}
+	}
+	return false
+}
+
+
 
 //   User Connects
 io.on('connection', (socket) => {
@@ -112,7 +122,6 @@ io.on('connection', (socket) => {
 	// current hours
 	socket.on('disconnect', (status) => {
 		io.emit('update active'); // Remove user from active list
-		let user = get_username(socket.id);
 		let msg = {
 			user: get_username(socket.id),
 			timestamp: time_stamp(),
@@ -126,13 +135,14 @@ io.on('connection', (socket) => {
 		update_activeusers();
 	});
 
+	// Chat message
 	socket.on('chat message', (msg) => {
 		// Backend retrieves username from cookie and sets timestamp
 		msg.user = usernames.get(msg.cookie);
 		msg.timestamp = time_stamp();
 
 		if (!msg.display){	// Private messages, we just sent back to the user
-			if (msg.type == "color"){
+			if (msg.type == "color"){ //When the user tries to change their color
 				io.emit('update active'); // Remove user from active list
 				let user = usernames.get(msg.cookie);
 				user.color = msg.message; 
@@ -142,14 +152,14 @@ io.on('connection', (socket) => {
 				socket.emit('name display', msg)
 			}
 			io.emit('clear message', msg);
-			output_history(io);
+			output_history(io); //update history
 			socket.emit('chat message', msg);
-			update_activeusers();
+			update_activeusers(); // Update the active list
 		}else{ // Public messages we send to all users
 			io.emit('update active'); // Remove user from active list
 
-			if (msg.type == "name"){
-				if (!username_exist(msg.message)){
+			if (msg.type == "name"){ //When user tries to change name
+				if (!username_exist(msg.message)){ //Check all the sockets connected and see if their username is the same as the requested name
 					let old_name = msg.user.name
 					msg.user.name = msg.message;
 					usernames.set(msg.cookie, msg.user);
@@ -158,7 +168,7 @@ io.on('connection', (socket) => {
 					msg.user = ""
 					msg_to_history(msg);
 					io.emit('chat message', msg);
-				}else{
+				}else{ // If a connected socket has the username, we output message already taken
 					msg.message = `The username "${msg.message}" has been taken`
 					socket.emit('chat message', msg);
 				}
@@ -173,24 +183,11 @@ io.on('connection', (socket) => {
 
 	});
 
-
-
-	
-
-	//Update username
-	function username_taken(username, currentuser){
-		for (let [key, value] of clients) {
-			if(usernames.get(value).name == username && value != currentuser){
-				return true
-			}
-		}
-		return false
-	}
-
+	// Handle cookie
 	socket.on('cookie success', (msg) => {		
-		// If user name doesnt exist, we set it to anon user 
+		
 		io.emit('update active'); // Clear active list
-		if (!usernames.has(msg)){
+		if (!usernames.has(msg)){ // If user name doesnt exist, we set it to anon user 
 			user = {
 				name: "anon_user" + anon_user.toString(),
 				color: "000000"
