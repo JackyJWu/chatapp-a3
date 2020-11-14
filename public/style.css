@@ -125,12 +125,13 @@ footer form {
 
 }
 
-footer input {
+footer form input {
     flex: 3;
     padding: 10px 0;
     border: none;
     background-color: #EBEBEB;
     margin: 0px 10%;
+    text-indent: 10px;
 }
 
 ::placeholder {

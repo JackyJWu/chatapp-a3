@@ -126,14 +126,6 @@ io.on('connection', (socket) => {
 	
 	if (usernames.get(socket.id) == null){
 		socket.emit('set cookie', socket.id, time_stamp());
-
-			// user = {
-			// 	name: "anon_user" + anon_user.toString(),
-			// 	color: "000000"
-			// }
-
-			// anon_user +=1;
-			// usernames.set(msg.cookie, user);
 	}
 	// socket.emit('set cookie', socket.id, time_stamp());
 
