@@ -9,8 +9,8 @@ function extract_cookie(){
   return unique_id;
 }
 
-// Check hex (Change this before submission)
-function isHex (hex) {
+// Check hex 
+function check_hex (hex) {
   return typeof hex === 'string'
       && !isNaN(Number('0x' + hex))
       && hex.length === 6
@@ -59,7 +59,7 @@ $(function () {
       // Handle when the user wants to change color
       else if (words[0] == "/color"){
         msg.display = false; // We only display message back to ther user
-        if (words.length == 2 && isHex(words[1])){
+        if (words.length == 2 && check_hex(words[1])){
           msg.message = words[1];
           msg.type = "color";
         }else{

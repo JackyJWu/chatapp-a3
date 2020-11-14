@@ -222,7 +222,9 @@ io.on('connection', (socket) => {
 	});
 });
 
-port = process.env.PORT || 80
+// This is for heroku
+// port = process.env.PORT || 80
+port = 3000
 http.listen(port, () => {
 	console.log('listening on *:3000');
 });
