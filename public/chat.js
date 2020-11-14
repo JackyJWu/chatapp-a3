@@ -21,9 +21,11 @@ function incorrect_slash(cmd){
   if (cmd.charAt(0) == '/'){
     if (cmd == '/color' || cmd == '/name'){
       return false
+    }else{
+      return true
     }
   }
-  return true
+  return false
 }
 
 // Emoji converted
