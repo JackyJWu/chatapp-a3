@@ -3,8 +3,8 @@ var app = express();
 
 // This is for heroku
 // port = process.env.PORT || 80
-// port = 3334
-port = 3000;
+port = 3334;
+// port = 3000;
 
 
 var http = require('http').createServer(app);
@@ -155,7 +155,7 @@ io.on('connection', (socket) => {
 
 	// Chat message
 	socket.on('chat message', (msg) => {
-		
+
 		// Backend retrieves username from cookie and sets timestamp
 		msg.user = usernames.get(msg.cookie);
 		msg.timestamp = time_stamp();
